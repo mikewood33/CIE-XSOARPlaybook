@@ -248,4 +248,4 @@ The tests cover timestamp parsing, the firewall counter baseline, a missed hour,
 - [Strata Cloud Manager API](https://pan.dev/strata-cloud-manager/). Management-plane API. This pack reads sync evidence from the NGFW XML API instead.
 - [NGFW API authentication and security](https://docs.paloaltonetworks.com/ngfw/api/api-authentication-and-security).
 
-`https://github.com/mikewood33/cursorHelp` is not a repository GitHub can see from this account, so this pack follows the Cortex XSOAR content-pack layout and the Palo Alto documents above.
+
