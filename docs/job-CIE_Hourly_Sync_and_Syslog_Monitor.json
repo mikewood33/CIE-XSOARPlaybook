@@ -1,0 +1,26 @@
+{
+    "name": "CIE - Hourly Sync and Syslog Monitor",
+    "note": "Create this job in Cortex XSOAR under Jobs. This file is a reference and is not imported with the content pack.",
+    "trigger": "time",
+    "recurring": true,
+    "cron": "0 * * * *",
+    "timezone": "America/New_York",
+    "playbookId": "CIE - Sync and Syslog Monitor",
+    "incidentType": "CIE Sync Monitor Run",
+    "severity": "Low",
+    "queueHandling": "Do not trigger a new job run while a previous run is active",
+    "playbookInputs": {
+        "Devices": "edge-fw:SERIAL,core-fw:SERIAL",
+        "Using": "Panorama",
+        "ApiCommand": "panorama",
+        "UseTarget": "true",
+        "SyncMaxAgeMinutes": "60",
+        "SyslogMaxAgeMinutes": "60",
+        "SyslogHeartbeatSource": "xsoar-incidents",
+        "SyslogHeartbeatQuery": "type:\"CIE Syslog\"",
+        "DeviceTimeOffsetMinutes": "0",
+        "NotifyEmail": "soc@example.com",
+        "CheckFirewallLogs": "true",
+        "QueryEachDevice": "false"
+    }
+}

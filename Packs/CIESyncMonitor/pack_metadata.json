@@ -1,0 +1,34 @@
+{
+    "name": "Cloud Identity Engine Sync Monitor",
+    "description": "Hourly Cortex XSOAR job that alerts when Cloud Identity Engine directory sync to an NGFW is older than an hour or when CIE syslog stops.",
+    "support": "community",
+    "currentVersion": "1.0.0",
+    "author": "mikewood33",
+    "url": "https://github.com/mikewood33/CIE-XSOARPlaybook",
+    "email": "",
+    "created": "2026-11-19T15:30:00Z",
+    "categories": [
+        "Network Security"
+    ],
+    "tags": [
+        "CIE",
+        "Cloud Identity Engine",
+        "PAN-OS",
+        "Syslog",
+        "NGFW"
+    ],
+    "useCases": [
+        "Network Security"
+    ],
+    "keywords": [
+        "CIE",
+        "Cloud Identity Engine",
+        "syslog",
+        "User-ID",
+        "NGFW"
+    ],
+    "marketplaces": [
+        "xsoar",
+        "marketplacev2"
+    ]
+}

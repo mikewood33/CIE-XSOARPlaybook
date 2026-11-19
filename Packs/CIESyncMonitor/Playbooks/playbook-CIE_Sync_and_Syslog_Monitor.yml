@@ -1,0 +1,304 @@
+id: CIE - Sync and Syslog Monitor
+version: -1
+name: CIE - Sync and Syslog Monitor
+description: 'Hourly Cloud Identity Engine check. Alerts when an NGFW has not synced CIE directory data within the threshold, when the firewall logs a CIE or syslog failure, or when expected CIE syslog stops. The job incident closes after every run so the next hour can start. Findings stay open on a separate CIE Sync Failure incident.'
+starttaskid: "0"
+tasks:
+  "0":
+    id: "0"
+    taskid: 58a10b9e-05ea-4914-b3d1-801b4f6f0901
+    type: start
+    task:
+      id: 58a10b9e-05ea-4914-b3d1-801b4f6f0901
+      version: -1
+      name: ""
+      iscommand: false
+      brand: ""
+      description: ''
+    nexttasks:
+      '#none#':
+      - "1"
+    separatecontext: false
+    view: |-
+      {
+        "position": {
+          "x": 450,
+          "y": 40
+        }
+      }
+    note: false
+    timertriggers: []
+    ignoreworker: false
+    skipunavailable: false
+    quietmode: 0
+  "1":
+    id: "1"
+    taskid: be42df0c-0ad0-4bb1-a4d8-0c96b297dc64
+    type: title
+    task:
+      id: be42df0c-0ad0-4bb1-a4d8-0c96b297dc64
+      version: -1
+      name: Check Cloud Identity Engine sync and syslog
+      type: title
+      iscommand: false
+      brand: ""
+      description: ''
+    nexttasks:
+      '#none#':
+      - "2"
+    separatecontext: false
+    view: |-
+      {
+        "position": {
+          "x": 450,
+          "y": 200
+        }
+      }
+    note: false
+    timertriggers: []
+    ignoreworker: false
+    skipunavailable: false
+    quietmode: 0
+  "2":
+    id: "2"
+    taskid: 4adb1c74-ea98-4670-874f-22ad1fbe24b3
+    type: regular
+    task:
+      id: 4adb1c74-ea98-4670-874f-22ad1fbe24b3
+      version: -1
+      name: Check CIE sync and syslog
+      description: Reads NGFW Cloud Identity Engine statistics and the syslog heartbeat. Opens or updates one alert incident when the threshold is missed.
+      scriptName: CIESyncHealthCheck
+      type: regular
+      iscommand: false
+      brand: ""
+    nexttasks:
+      '#none#':
+      - "3"
+    scriptarguments:
+      devices:
+        complex:
+          root: inputs.Devices
+      using:
+        complex:
+          root: inputs.Using
+      api_command:
+        complex:
+          root: inputs.ApiCommand
+      use_target:
+        complex:
+          root: inputs.UseTarget
+      sync_max_age_minutes:
+        complex:
+          root: inputs.SyncMaxAgeMinutes
+      syslog_max_age_minutes:
+        complex:
+          root: inputs.SyslogMaxAgeMinutes
+      syslog_heartbeat_source:
+        complex:
+          root: inputs.SyslogHeartbeatSource
+      syslog_heartbeat_query:
+        complex:
+          root: inputs.SyslogHeartbeatQuery
+      device_time_offset_minutes:
+        complex:
+          root: inputs.DeviceTimeOffsetMinutes
+      notify_email:
+        complex:
+          root: inputs.NotifyEmail
+      alert_incident_type:
+        complex:
+          root: inputs.AlertIncidentType
+      state_list_name:
+        complex:
+          root: inputs.StateListName
+      check_firewall_logs:
+        complex:
+          root: inputs.CheckFirewallLogs
+      query_each_device:
+        complex:
+          root: inputs.QueryEachDevice
+    separatecontext: false
+    view: |-
+      {
+        "position": {
+          "x": 450,
+          "y": 380
+        }
+      }
+    note: false
+    timertriggers: []
+    ignoreworker: false
+    skipunavailable: false
+    quietmode: 0
+  "3":
+    id: "3"
+    taskid: 64d291eb-6a47-4eec-8adf-570d1a4ea788
+    type: title
+    task:
+      id: 64d291eb-6a47-4eec-8adf-570d1a4ea788
+      version: -1
+      name: Close the hourly job run
+      type: title
+      iscommand: false
+      brand: ""
+      description: ''
+    nexttasks:
+      '#none#':
+      - "4"
+    separatecontext: false
+    view: |-
+      {
+        "position": {
+          "x": 450,
+          "y": 580
+        }
+      }
+    note: false
+    timertriggers: []
+    ignoreworker: false
+    skipunavailable: false
+    quietmode: 0
+  "4":
+    id: "4"
+    taskid: b1984b49-30ff-43f7-abcf-101c15f1add7
+    type: regular
+    task:
+      id: b1984b49-30ff-43f7-abcf-101c15f1add7
+      version: -1
+      name: Close job incident
+      description: Closes the job incident so the next hourly run is not blocked. An unhealthy result remains open on the CIE Sync Failure incident.
+      script: Builtin|||closeInvestigation
+      type: regular
+      iscommand: true
+      brand: Builtin
+    scriptarguments:
+      closeReason:
+        simple: Resolved
+      closeNotes:
+        complex:
+          root: CIE.Health
+          accessor: CloseNotes
+    separatecontext: false
+    view: |-
+      {
+        "position": {
+          "x": 450,
+          "y": 760
+        }
+      }
+    note: false
+    timertriggers: []
+    ignoreworker: false
+    skipunavailable: false
+    quietmode: 0
+view: |-
+  {
+    "linkLabelsPosition": {},
+    "paper": {
+      "dimensions": {
+        "height": 860,
+        "width": 900,
+        "x": 450,
+        "y": 40
+      }
+    }
+  }
+inputs:
+- key: Devices
+  value:
+    simple: ""
+  required: false
+  description: 'Firewall names and Panorama serials, for example edge-fw:012345678901,core-fw:012345678902. Leave empty to query the integration instance itself.'
+  playbookInputQuery:
+- key: Using
+  value:
+    simple: ""
+  required: false
+  description: PAN-OS or Panorama integration instance name. Leave empty to use the default enabled instance.
+  playbookInputQuery:
+- key: ApiCommand
+  value:
+    simple: panorama
+  required: false
+  description: panorama when the instance is Panorama. pan-os when the instance is a single firewall.
+  playbookInputQuery:
+- key: UseTarget
+  value:
+    simple: "true"
+  required: false
+  description: 'Pass each serial as the API target. true for Panorama. false for a firewall instance.'
+  playbookInputQuery:
+- key: SyncMaxAgeMinutes
+  value:
+    simple: "60"
+  required: false
+  description: Alert when the newest CIE sync evidence on a firewall is at least this many minutes old.
+  playbookInputQuery:
+- key: SyslogMaxAgeMinutes
+  value:
+    simple: "60"
+  required: false
+  description: Alert when no CIE syslog heartbeat is seen for this many minutes.
+  playbookInputQuery:
+- key: SyslogHeartbeatSource
+  value:
+    simple: xsoar-incidents
+  required: false
+  description: xsoar-incidents, pan-os-log, xsiam-xql, or disabled.
+  playbookInputQuery:
+- key: SyslogHeartbeatQuery
+  value:
+    simple: 'type:"CIE Syslog"'
+  required: false
+  description: Incident query, PAN-OS system-log filter, or XQL query that should return at least one CIE syslog event per window.
+  playbookInputQuery:
+- key: DeviceTimeOffsetMinutes
+  value:
+    simple: "0"
+  required: false
+  description: 'Minutes to add to UTC to match the firewall clock. Use 0 when the firewall uses UTC. US Eastern Standard Time is -300.'
+  playbookInputQuery:
+- key: NotifyEmail
+  value:
+    simple: ""
+  required: false
+  description: Email address for the alert summary. Leave empty to skip email.
+  playbookInputQuery:
+- key: AlertIncidentType
+  value:
+    simple: CIE Sync Failure
+  required: false
+  description: Incident type opened when a finding is detected. Do not attach this playbook to that type.
+  playbookInputQuery:
+- key: StateListName
+  value:
+    simple: CIE-Sync-Monitor-State
+  required: false
+  description: XSOAR list that stores the previous CIE update counters.
+  playbookInputQuery:
+- key: CheckFirewallLogs
+  value:
+    simple: "true"
+  required: false
+  description: Query system logs for cas-message and syslog-conn-status failures.
+  playbookInputQuery:
+- key: QueryEachDevice
+  value:
+    simple: "false"
+  required: false
+  description: Query system logs on each firewall serial. Leave false to query the Panorama log database once.
+  playbookInputQuery:
+outputs:
+- contextPath: CIE.Health.Status
+  description: Healthy or Alert.
+- contextPath: CIE.Health.AlertIncidentID
+  description: Open CIE Sync Failure incident for this run.
+- contextPath: CIE.Health.Summary
+  description: Markdown report for the run.
+tests:
+- No tests
+fromversion: 6.10.0
+marketplaces:
+- xsoar
+- marketplacev2

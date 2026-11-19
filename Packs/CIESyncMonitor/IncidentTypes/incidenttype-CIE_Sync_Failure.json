@@ -1,0 +1,31 @@
+{
+    "autorun": false,
+    "color": "#C62828",
+    "days": 0,
+    "daysR": 0,
+    "default": false,
+    "detached": false,
+    "disabled": false,
+    "extractSettings": {
+        "fieldCliNameToExtractSettings": {},
+        "mode": "All"
+    },
+    "fromVersion": "6.10.0",
+    "hours": 0,
+    "hoursR": 0,
+    "id": "CIE Sync Failure",
+    "locked": false,
+    "marketplaces": [
+        "xsoar",
+        "marketplacev2"
+    ],
+    "name": "CIE Sync Failure",
+    "onChangeRepAlg": 1,
+    "playbookId": "",
+    "readonly": false,
+    "reputationCalc": 1,
+    "system": false,
+    "version": -1,
+    "weeks": 0,
+    "weeksR": 0
+}
