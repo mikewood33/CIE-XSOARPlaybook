@@ -1,0 +1,109 @@
+args:
+- description: Firewall names, optionally with Panorama serials. Example edge-fw:012345678901,core-fw:012345678902. Leave empty to query the integration instance itself.
+  name: devices
+  required: false
+- description: PAN-OS or Panorama integration instance name. Leave empty to use the default enabled instance.
+  name: using
+  required: false
+- description: Integration command to run. panorama when the instance is Panorama, pan-os when the instance is a firewall.
+  name: api_command
+  defaultValue: panorama
+  required: false
+- description: 'Pass each device serial as the PAN-OS API target. Use true for Panorama. Use false for a firewall instance.'
+  name: use_target
+  defaultValue: "true"
+  required: false
+- description: Alert when the newest Cloud Identity Engine sync evidence is at least this many minutes old.
+  name: sync_max_age_minutes
+  defaultValue: "60"
+  required: false
+- description: Alert when no CIE syslog heartbeat is seen for this many minutes.
+  name: syslog_max_age_minutes
+  defaultValue: "60"
+  required: false
+- description: Where to look for CIE syslog. xsoar-incidents, pan-os-log, xsiam-xql, or disabled.
+  name: syslog_heartbeat_source
+  defaultValue: xsoar-incidents
+  required: false
+- description: 'Heartbeat query. For xsoar-incidents this is an incident query, for pan-os-log a system-log filter, and for xsiam-xql an XQL query.'
+  name: syslog_heartbeat_query
+  defaultValue: 'type:"CIE Syslog"'
+  required: false
+- description: 'Minutes to add to UTC to match the firewall clock. Use 0 when the firewall is set to UTC. US Eastern Standard Time is -300.'
+  name: device_time_offset_minutes
+  defaultValue: "0"
+  required: false
+- description: Email address that receives the alert summary. Leave empty to skip email.
+  name: notify_email
+  required: false
+- description: Incident type opened when a sync or syslog finding is detected.
+  name: alert_incident_type
+  defaultValue: CIE Sync Failure
+  required: false
+- description: XSOAR list that stores the previous sync counters.
+  name: state_list_name
+  defaultValue: CIE-Sync-Monitor-State
+  required: false
+- description: Query firewall system logs for cas-message and syslog-conn-status failures.
+  name: check_firewall_logs
+  defaultValue: "true"
+  required: false
+- description: Run the system-log query on each device serial instead of once on Panorama.
+  name: query_each_device
+  defaultValue: "false"
+  required: false
+comment: Checks Cloud Identity Engine sync to NGFWs and CIE syslog freshness, then opens or updates an alert when the hourly threshold is missed.
+commonfields:
+  id: CIESyncHealthCheck
+  version: -1
+dockerimage: demisto/python3:3.12.14.13053055
+enabled: true
+name: CIESyncHealthCheck
+outputs:
+- contextPath: CIE.Health.Status
+  description: Healthy or Alert.
+  type: string
+- contextPath: CIE.Health.CheckedAt
+  description: UTC time the check finished.
+  type: string
+- contextPath: CIE.Health.Summary
+  description: Markdown report written to the war room.
+  type: string
+- contextPath: CIE.Health.AlertCount
+  description: Number of findings in this run.
+  type: number
+- contextPath: CIE.Health.AlertIncidentID
+  description: Open CIE Sync Failure incident updated or created for this run.
+  type: string
+- contextPath: CIE.Health.CloseNotes
+  description: Note used when the hourly job incident is closed.
+  type: string
+- contextPath: CIE.Health.JobIncidentName
+  description: Name applied to the hourly job incident.
+  type: string
+- contextPath: CIE.Health.Severity
+  description: Low when healthy, High for a missed sync or silent syslog, Critical for an explicit failure.
+  type: string
+- contextPath: CIE.Health.Alerts
+  description: Findings for this run.
+  type: unknown
+- contextPath: CIE.Health.Devices
+  description: Per-firewall sync result.
+  type: unknown
+- contextPath: CIE.Health.Syslog
+  description: Heartbeat source, count, and detail.
+  type: unknown
+script: ''
+scripttarget: 0
+subtype: python3
+tags:
+- Utility
+- CIE
+timeout: '900000000000'
+type: python
+fromversion: 6.10.0
+marketplaces:
+- xsoar
+- marketplacev2
+tests:
+- No tests
